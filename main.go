@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"image/color"
 	"io"
 	"net/http"
 	"strconv"
@@ -202,8 +203,10 @@ func parseMarkerLocations(markers []string) ([]marker, error) {
 		parts := strings.Split(markerInformation, "|")
 
 		var (
-			size = markerSizes["small"]
-			col  = markerColors["red"]
+			size       = markerSizes["small"]
+			col        = markerColors["red"]
+			label      = ""
+			labelColor color.Color
 		)
 
 		for _, p := range parts {
@@ -226,15 +229,26 @@ func parseMarkerLocations(markers []string) ([]marker, error) {
 				} else {
 					return nil, fmt.Errorf("Bad color name %q", strings.TrimPrefix(p, "color:"))
 				}
+			case strings.HasPrefix(p, "label:"):
+				l := strings.TrimPrefix(p, "label:")
+				label = l
+			case strings.HasPrefix(p, "labelcolor:"):
+				if c, ok := markerColors[strings.TrimPrefix(p, "labelcolor:")]; ok {
+					labelColor = c
+				} else {
+					return nil, fmt.Errorf("Bad color name %q", strings.TrimPrefix(p, "color:"))
+				}
 			default:
 				pos, err := parseCoordinate(p)
 				if err != nil {
 					return nil, fmt.Errorf("Unparsable chunk found in marker: %q", p)
 				}
 				result = append(result, marker{
-					pos:   pos,
-					color: col,
-					size:  size,
+					pos:        pos,
+					color:      col,
+					size:       size,
+					label:      label,
+					labelColor: labelColor,
 				})
 			}
 		}

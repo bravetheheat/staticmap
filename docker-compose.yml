@@ -1,0 +1,9 @@
+version: "3.2"
+
+services:
+  go-map:
+    build: .
+    ports:
+      - 80:3000
+    restart: unless-stopped
+    command: "--force-cache 0 --rate-limit 300"

@@ -29,15 +29,18 @@ var markerColors = map[string]color.Color{
 type markerSize float64
 
 var markerSizes = map[string]markerSize{
-	"tiny":  10,
-	"mid":   15,
-	"small": 20,
+	"tiny":   10,
+	"mid":    15,
+	"small":  20,
+	"medium": 25,
 }
 
 type marker struct {
-	pos   s2.LatLng
-	color color.Color
-	size  markerSize
+	pos        s2.LatLng
+	color      color.Color
+	size       markerSize
+	label      string
+	labelColor color.Color
 }
 
 func (m marker) String() string {
@@ -94,7 +97,12 @@ func generateMap(opts generateMapConfig) (io.Reader, error) {
 
 	if opts.Markers != nil {
 		for _, m := range opts.Markers {
-			ctx.AddMarker(staticMap.NewMarker(m.pos, m.color, float64(m.size)))
+			newMarker := staticMap.NewMarker(m.pos, m.color, float64(m.size))
+			newMarker.Label = m.label
+			if m.labelColor != nil {
+				newMarker.SetLabelColor(m.labelColor)
+			}
+			ctx.AddMarker(newMarker)
 		}
 	}
 

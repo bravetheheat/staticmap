@@ -20,6 +20,17 @@ func (t *TileProvider) getURL(shard string, zoom, x, y int) string {
 	return fmt.Sprintf(t.URLPattern, shard, zoom, x, y)
 }
 
+// NewTileProviderWOWA creates a TileProvider struct for WOWA.ca's tile service
+func NewTileProviderWOWA() *TileProvider {
+	t := new(TileProvider)
+	t.Name = "wowa"
+	t.Attribution = "Maps and Data (c) openstreetmap.org and contributors, ODbL"
+	t.TileSize = 256
+	t.URLPattern = "https://maps.wowa.ca/styles/production/%[2]d/%[3]d/%[4]d.png"
+	t.Shards = []string{}
+	return t
+}
+
 // NewTileProviderOpenStreetMaps creates a TileProvider struct for OSM's tile service
 func NewTileProviderOpenStreetMaps() *TileProvider {
 	t := new(TileProvider)
@@ -148,6 +159,7 @@ func GetTileProviders() map[string]*TileProvider {
 		NewTileProviderOpenCycleMap(),
 		NewTileProviderCartoLight(),
 		NewTileProviderCartoDark(),
+		NewTileProviderWOWA(),
 	}
 
 	for _, tp := range list {

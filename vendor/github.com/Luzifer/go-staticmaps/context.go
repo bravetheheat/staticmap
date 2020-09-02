@@ -56,7 +56,7 @@ func NewContext() *Context {
 	t.hasBoundingBox = false
 	t.background = nil
 	t.userAgent = ""
-	t.tileProvider = NewTileProviderOpenStreetMaps()
+	t.tileProvider = NewTileProviderWOWA()
 	return t
 }
 
